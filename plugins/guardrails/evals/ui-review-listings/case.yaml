@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: ui-review-listings
+description: A listings page that ignores its DESIGN.md (purple gradient, hex literals, Inter, emoji icon, lorem ipsum, clickable div, missing alt, off-scale text, hand-rolled modal, unformatted rupees, no loading, empty or error state). The review must judge it against DESIGN.md.
+tags: [ui-review, smoke]
+runs: 1
+context:
+  scaffold_script: fixture.sh

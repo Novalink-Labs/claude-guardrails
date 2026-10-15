@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: deslop-discount
+description: A generated discount module with slop (narrating comments, a duplicate money helper, a one-implementation factory, magic numbers, an emoji debug log, commented-out code) and a catch that a test relies on. Deslop must clean up, keep behaviour, run the tests, and leave the catch alone.
+tags: [deslop]
+runs: 1
+context:
+  scaffold_script: fixture.sh

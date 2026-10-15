@@ -17,5 +17,5 @@ All notable changes to this project. Versions follow [semantic versioning](https
 - `security-audit`: repo-wide secrets, access-control, injection, BaaS rules, CI and dependency audit.
 - `ship-check`: release go or no-go for backend, frontend and mobile, with release notes and rollback.
 - `council`: evidence-first decision council used by `adr`, `setup`, `design-language` and `ship-check` for contested or hard-to-reverse decisions.
-- Eval suite with fixtures for `pr-review`, `security-audit`, `adr`, `setup` (audit and new repo) and `design-language` (choices and variant previews).
+- Eval suite with fixtures for `pr-review`, `security-audit`, `adr`, `setup` (audit and new repo), `design-language` (choices and variant previews), `ui-review`, `deslop` and `ship-check`.
 - Decisions are offered as choices (recommended first, "Decide for me", free text allowed): target platforms and OS conventions, feel, theme, component library, design variants and their parts, stack and database, and ADR acceptance.
