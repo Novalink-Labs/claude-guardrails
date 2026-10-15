@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: design-language-variants
+description: All brief questions answered and the rest delegated; the skill must render variant previews built from tokens, real font pairings, light and dark, contrast ratios and real product copy.
+tags: [design-language]
+runs: 1
+context:
+  scaffold_script: fixture.sh

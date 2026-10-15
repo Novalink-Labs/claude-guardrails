@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: setup-new-repo-asks-stack
+description: An empty repo and an undecided stack; setup must ask stack and database choices with a recommendation and a delegate option instead of picking silently.
+tags: [setup, smoke]
+runs: 1
+context:
+  scaffold_script: fixture.sh
