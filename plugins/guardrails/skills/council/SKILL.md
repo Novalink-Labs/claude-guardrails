@@ -71,7 +71,7 @@ Before concluding, check: did anything get invented; was any source cited withou
 ### What would change the conclusion
 ```
 
-When comparing options, end with the recommended option, its status and confidence, and the runner-up with what would make it win.
+When comparing options, end with the recommended option, its status and confidence, and the runner-up with what would make it win. Then offer the options as a choice (`../setup/references/asking-users.md`), recommended first, plus "Gather more evidence first" when the status is Uncertain.
 
 ## Hand-off
 

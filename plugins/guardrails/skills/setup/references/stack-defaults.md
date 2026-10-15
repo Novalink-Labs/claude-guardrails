@@ -4,7 +4,16 @@ Use this when the stack isn't decided yet: a new repo, or an existing one missin
 
 ## The interview
 
-Ask in one message (AskUserQuestion if available), skipping anything the repo already answers. Offer "decide for me" on each question.
+Ask as choices, following `asking-users.md`, skipping anything the repo already answers. Each question offers two to four real options with the one that fits this product recommended first, plus "Decide for me". For example:
+
+| Question | Options |
+|---|---|
+| Database | PostgreSQL (Recommended for transactional data) · MongoDB (document-shaped data, or our template) · Supabase (realtime with little backend) · Decide for me |
+| Backend | NestJS from our template (Recommended) · Fastify or Hono (small service) · FastAPI (data or ML work) · Decide for me |
+| Auth | Built-in JWT and refresh tokens (Recommended for email or OTP sign-in) · A provider such as Auth0, Clerk or Supabase Auth (SSO, many social logins) · Decide for me |
+| Platforms | Web · iOS · Android · Desktop (multi-select) |
+
+The questions to cover:
 
 1. **Backend:** language and framework. Or "start from our template" if the team has one.
 2. **Database:** relational (PostgreSQL, MySQL), document (MongoDB), embedded (SQLite), or a backend-as-a-service (Supabase, Firebase). Managed provider, if they have one.

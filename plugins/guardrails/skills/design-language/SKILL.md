@@ -27,7 +27,13 @@ Load only the reference file each step needs. Look at references once and keep n
 - What already exists: logo, brand colours and fonts, tone of voice, an existing DESIGN.md or tokens, the current UI. A refinement keeps the existing identity; a redesign replaces it. Ask which, if it isn't clear.
 - Constraints: accessibility needs, trust-first or regulated audiences, the scripts the product must render (Devanagari, Tamil, Arabic...), low-end devices, dark mode.
 
-Write a one-line design read: "<surface kind> for <audience>, should feel <three specific adjectives>, constrained by <constraints>." Ask one question only if the read is genuinely ambiguous.
+Ask what the brief doesn't say as choices, following `../setup/references/asking-users.md`, in one call:
+- **Surface kind:** Persuade, Operate, Read or Showcase, with your guess recommended.
+- **Target platforms** (multi-select): web, iOS, Android, desktop. Then, for native platforms: follow each OS's conventions (Apple's Human Interface Guidelines on iOS, Material 3 on Android) with the brand on top, or one brand look everywhere with platform behaviour (navigation, gestures, system controls) kept native.
+- **Feel:** three or four directions written for this product, for example "Calm and precise", "Warm and friendly", "Bold and editorial", "Dense and technical", each with a one-line description of what it looks like here.
+- **Theme:** light, dark, or both from the start.
+
+Then write a one-line design read: "<surface kind> on <platforms> for <audience>, should feel <three specific adjectives>, constrained by <constraints>."
 
 ## 2. Research what this product and its category look like
 
@@ -41,11 +47,11 @@ Never design from memory. Users carry expectations from the apps they already us
    - **Room to differ:** where the category is generic and this product can be distinct.
    - **What to avoid:** the dislikes, and the category's clichés.
 
-In screen mode, do this for the specific screen (for example, how five comparable apps do onboarding, search filters or checkout) and propose two or three layouts in the existing language.
+In screen mode, do this for the specific screen (for example, how five comparable apps do onboarding, search filters or checkout), then offer two or three layouts in the existing language as a choice, each with an ASCII sketch as its preview and the products that use that pattern.
 
 ## 3. Choose the component foundation (the team decides)
 
-A good component library fixes much of what makes UI look vibe-coded: consistent spacing, real focus states, keyboard support and accessible behaviour come built in. Present two or three options that fit the stack from `references/component-libraries.md`, with trade-offs and a recommendation. Keep the library the repo already uses unless the team wants to change it.
+A good component library fixes much of what makes UI look vibe-coded: consistent spacing, real focus states, keyboard support and accessible behaviour come built in. Offer two or three libraries that fit the stack and platforms from `references/component-libraries.md` as a choice (recommended first, each with its trade-off, plus "Decide for me"). Keep the library the repo already uses unless the team wants to change it.
 
 Two rules follow from the choice, and go into AGENTS.md:
 - Use the library's components before writing new ones; never hand-roll a dialog, menu, select, combobox, tabs, toast, tooltip or date picker the library provides.
@@ -76,7 +82,16 @@ Render one self-contained preview per variant at `docs/design/variants/<name>.ht
 - one realistic screen from this product with real copy from the spec, never lorem ipsum;
 - light and dark.
 
-Open them for the user if a browser is available. The team picks one, or combines parts ("B's type with A's colours"); re-render a combination so it's judged as a whole. If the team is split, run `/guardrails:council` on the variants against the design read and the category research, rather than going with whoever argues hardest.
+Open them for the user if a browser is available, then ask for the pick as a choice (`../setup/references/asking-users.md`): one option per variant, each with a preview listing its fonts, accent and neutrals, radius, density and signature element, plus "Mix parts of them" and "None of these, show other directions".
+
+If they want to mix, ask per part in one call, three options each, drawn from the variants and the references:
+- **Type pairing:** from `references/font-pairings.md`, matched to the feel and the scripts the product needs.
+- **Accent colour:** three accents, each with its contrast on the background.
+- **Density:** compact, comfortable or spacious.
+- **Shape:** sharp, soft or round corners.
+- **Motion:** still, subtle or lively.
+
+Re-render a combination so it's judged as a whole. If the team is split, run `/guardrails:council` on the variants against the design read and the category research, rather than going with whoever argues hardest.
 
 ## 6. Record the choice
 

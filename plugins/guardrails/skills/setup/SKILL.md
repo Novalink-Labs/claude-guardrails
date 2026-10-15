@@ -36,7 +36,7 @@ Show the user a short inventory (stacks, what exists, what's missing, risk signa
 
 ## 2. Ask for what the repo can't tell you
 
-One message, only the gaps (use AskUserQuestion if it's available):
+One message, only the gaps, asked as choices wherever there are real options (`references/asking-users.md`):
 - Product name and one line on what it does.
 - Where the spec lives and where the design lives (doc path, Figma link, tracker).
 - Who signs off decisions (names or roles).

@@ -67,6 +67,16 @@ Things to weigh: accessibility record, how far theming can go, bundle size, serv
 | gluestack-ui | `@gluestack-ui/core` | Universal components for native and web. |
 | React Native Paper | `react-native-paper` | Material Design for React Native. |
 
+## Native apps
+
+| Platform | Foundation | Conventions to follow |
+|---|---|---|
+| iOS | SwiftUI with the system components | Apple Human Interface Guidelines: navigation stacks, tab bars, sheets, Dynamic Type, SF Symbols |
+| Android | Jetpack Compose with Material 3 | Material 3: top app bars, navigation bar or rail, dynamic colour where the brand allows |
+| Flutter | Material 3 widgets, Cupertino widgets where the iOS feel matters | The same platform guidelines, chosen per platform or one brand look with native behaviour |
+
+Whether native apps follow each OS's look or share one brand look is a choice for the team (step 1 of the skill). Either way, keep platform behaviour native: back navigation, gestures, system sheets, keyboard and accessibility settings.
+
 ## Supporting pieces
 
 - **Data tables:** TanStack Table (`@tanstack/react-table`, with ports for other frameworks), styled with the chosen kit.
