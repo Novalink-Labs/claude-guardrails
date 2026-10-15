@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: security-audit-leaks
+description: A Next.js and Supabase repo with a database password deleted from the tree but still in git history, a service-role key exposed to the browser, a table without row-level security, and an unauthenticated user route.
+tags: [security-audit, smoke]
+runs: 1
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,11 @@
+{
+  "name": "guardrails",
+  "version": "0.1.0",
+  "description": "Stop vibe coding. Set up any repo with specs, ADRs, git rules and CI; review PRs in depth against them; audit security and leaks; gate releases so critical bugs don't ship.",
+  "author": {
+    "name": "Novalink Labs"
+  },
+  "repository": "https://github.com/Novalink-Labs/claude-guardrails",
+  "license": "MIT",
+  "keywords": ["code-review", "pr-review", "adr", "security", "secrets", "release", "guardrails", "vibe-coding"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "novalink-labs",
+  "owner": {
+    "name": "Novalink Labs"
+  },
+  "description": "Claude Code plugins maintained by Novalink Labs.",
+  "plugins": [
+    {
+      "name": "guardrails",
+      "source": "./plugins/guardrails",
+      "description": "Stop vibe coding. Set up any repo with specs, ADRs, git rules and CI; review PRs in depth against them; audit security and leaks; gate releases so critical bugs don't ship."
+    }
+  ]
+}
