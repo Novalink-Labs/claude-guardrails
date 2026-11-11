@@ -39,7 +39,7 @@ Ask for everything missing in one message, saying why each matters, then wait. I
 
 ## 3. Review
 
-Read the whole diff, then enough surrounding code to understand each change. Work through `references/checklist.md`: the general sections always, and the backend, frontend, mobile and database sections when the diff touches them. In order of weight:
+Read the whole diff, then enough surrounding code to understand each change. Diff output has no file line numbers, even when you read it back from a saved file: before citing a line, open the changed file on the head or `git grep -n` it there. Work through `references/checklist.md`: the general sections always, and the backend, frontend, mobile and database sections when the diff touches them. In order of weight:
 
 1. **Silent decisions:** architecture, data model, product behaviour, UI pattern or security logic that no spec, design or accepted ADR covers.
 2. **Critical bugs:** for each changed function, walk the inputs and states it can meet (empty, null, boundary, duplicate, concurrent, dependency down, partial failure, retry) and what the code does with each.
@@ -55,7 +55,7 @@ Then run the repo's own checks once (typecheck, lint, tests with coverage if the
 
 ## 4. Verify every finding
 
-Before reporting, go back to the code for each finding: open the file at the line, check the claim against what the code really does, and check it's in the changed lines or directly caused by them. Cite the rule (AGENTS.md section or ADR number) or the evidence (a command's output, the existing helper's path). Drop anything you can't point to; a short review of real problems beats a long one with guesses. Problems that predate this change go in one line under "Outside this PR".
+Before reporting, go back to the code for each finding: open the file at the line, check the claim against what the code really does, and check it's in the changed lines or directly caused by them. Each `path:line` must be the line in the head's file that you just opened, never a position in the diff output. Cite the rule (AGENTS.md section or ADR number) or the evidence (a command's output, the existing helper's path). Drop anything you can't point to; a short review of real problems beats a long one with guesses. Problems that predate this change go in one line under "Outside this PR".
 
 Label evidence: **FACT** (seen in code, a doc or command output), **INFERENCE** (follows from facts), **UNKNOWN** (can't tell from here; becomes a question for the author).
 

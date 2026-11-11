@@ -12,7 +12,7 @@ It doesn't deploy, tag or change code. It prepares the commands and the notes; a
 
 ## Work efficiently
 
-Scope everything to the release range. Review the risky diffs in depth (auth, payments, data model, migrations, critical flows) and skim the rest. Reuse the checklists of the other skills instead of re-deriving them. Run each command once.
+Scope everything to the release range. Review the risky diffs in depth (auth, payments, data model, migrations, critical flows) and skim the rest. Diff output has no file line numbers, even when you read it back from a saved file: before citing `path:line`, open the file at the range's end or `git grep -n` it there. Reuse the checklists of the other skills instead of re-deriving them. Run each command once.
 
 ## 1. Scope the release
 

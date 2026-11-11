@@ -4,6 +4,12 @@ All notable changes to this project. Versions follow [semantic versioning](https
 
 ## Unreleased
 
+### Fixed
+
+- `pr-review` and `ship-check`: `path:line` citations are the line in the file, not the line's position in the diff output.
+- `council`: the conclusion names the proposition its status rates and answers in one plain sentence; options are labelled Recommended, Runner-up or Not recommended, so they can't be mistaken for the status.
+- `security-audit`: never prints a secret's value, even when gitleaks isn't installed.
+
 ## 0.1.0 - 2026-10-15
 
 ### Added

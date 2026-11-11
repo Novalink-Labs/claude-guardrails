@@ -59,8 +59,10 @@ Before concluding, check: did anything get invented; was any source cited withou
 ```markdown
 ## Council: <question>
 
+**Proposition:** <the claim the status rates, worded so the status reads naturally>
 **Status:** Supported | Likely | Uncertain | Unlikely | Unsupported
 **Confidence:** Low | Medium | High
+**In short:** <one plain sentence answering the question>
 
 ### What we know
 ### Strongest evidence
@@ -71,7 +73,7 @@ Before concluding, check: did anything get invented; was any source cited withou
 ### What would change the conclusion
 ```
 
-When comparing options, end with the recommended option, its status and confidence, and the runner-up with what would make it win. Then offer the options as a choice (`../setup/references/asking-users.md`), recommended first, plus "Gather more evidence first" when the status is Uncertain.
+Status words rate the proposition only. When listing options, label them Recommended, Runner-up or Not recommended instead, so a reader can't confuse an option's label with the proposition's status. When comparing options, end with the recommended option, its confidence, and the runner-up with what would make it win. Then offer the options as a choice (`../setup/references/asking-users.md`), recommended first, plus "Gather more evidence first" when the status is Uncertain.
 
 ## Hand-off
 

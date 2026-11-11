@@ -29,6 +29,8 @@ Search before reading: use the patterns in `references/leak-patterns.md` and tar
 
 A secret found in history or a bundle is leaked, even if it's gone from the latest commit. It goes on the rotate-now list.
 
+Never print a secret's value, in the report or in quoted command output: give its type and location, and at most its first 4 characters.
+
 ## 3. Access control
 
 - List every entry point with its auth requirement. Flag any without authentication that isn't clearly meant to be public.
