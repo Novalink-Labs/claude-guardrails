@@ -33,5 +33,20 @@ All notable changes to this project. Versions follow [semantic versioning](https
   - CSV formula escaping;
   - redirects kept on-site;
   - permissions enforced on the server, not by hiding controls.
+- Security rules drawn from a 21-finding security scan of a production multi-tenant API. `setup` writes them into AGENTS.md, and `pr-review`, `ship-check` and `security-audit` check them. They cover:
+  - child records that follow the parent's access rule on read, edit and delete;
+  - write paths that re-check scope and state, with sign-off undone by later edits;
+  - field-level visibility on every endpoint and export;
+  - no stored claims from unverified tokens, and system markers kept out of client-filled fields;
+  - revocation that fails closed;
+  - sign-in checks on every token-issuing path;
+  - host-only `__Host-` auth cookies;
+  - device identity from a server-issued cookie, not headers;
+  - no bearer tokens in URL paths, and route templates in access logs;
+  - atomic attempt counters;
+  - exact proxy trust that fails closed;
+  - shared cross-tenant profiles that stay private until the person accepts;
+  - lower bounds on pagination;
+  - jobs and notifications that re-check recipients at send time.
 - `pr-review` manual test list: odd input, double submit, clearing a field, totals compared across screens, and each role (and one that can't reach the change).
 - Eval `pr-review-off-happy-path`: an invoices branch that works on the happy path but carries seven of these bugs.

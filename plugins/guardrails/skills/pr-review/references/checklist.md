@@ -55,6 +55,14 @@ For each changed function or component, walk the cases:
 - Webhooks verify signatures and are idempotent. Uploads are type- and size-limited, with the type checked against the file's signature bytes (a declared `image/png` or a `.png` name proves nothing), and stored under server-generated names.
 - Exports: CSV and spreadsheet cells starting with `=`, `+`, `-`, `@`, tab or carriage return are escaped; values with commas, quotes or newlines are quoted.
 - Redirects: a `next` or return URL is parsed like the browser does and stays on this site.
+- Child records and later writes: in your head, read, edit or delete a child (document, note, entry) of a parent you can't see; edit an amount after sign-off; submit or approve an entry whose project closed or whose access ended. Each is refused. A bulk action skips the failing item instead of aborting.
+- Field visibility: a field hidden from a role (cost, rate, pay) is also hidden on the new endpoint, list, export or related record that returns it.
+- Tokens: claims are read only after the signature is checked, on logout and revoke too; a system marker (revoke-all) can't be forged through a field the client fills; revocation fails closed, including with encrypted payloads. A new path that issues a session (refresh, change password, invite accept) applies the same status, role and access-window checks as sign-in.
+- Cookies and devices: auth cookies are `__Host-` with no `Domain`; a "new device" check keys on a server-issued cookie, not request headers, and treats an unknown device as new.
+- Secrets in URLs: no bearer token in an API path or query; access logs record the route template.
+- Counters and proxies: attempt limits increment atomically; proxy trust is an exact list or hop count, never `true`; a server-side proxy doesn't forward the client's `X-Forwarded-For`.
+- Cross-tenant: invite someone who already belongs to another organisation. Before they accept, you can't see or change their profile, learn whether they have an account, or bind their account.
+- Bounds and jobs: page size and page number refuse negatives; a job or notification re-checks each recipient's current membership and role.
 - New dependencies: needed, maintained, licence acceptable, no known high or critical vulnerabilities.
 - CI changes: no `pull_request_target` running PR code, no untrusted `${{ }}` in `run:`, minimal `permissions`.
 - Sensitive areas (auth, payments, personal data, data isolation, secrets, uploads): recommend `/security-review` before merge.

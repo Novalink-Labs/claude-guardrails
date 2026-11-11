@@ -5,6 +5,8 @@ Use the sections for the areas the release touches. Each item is pass, fail, or 
 ## Backend
 
 - New and changed endpoints have authentication, authorisation (object and function level), input validation and serialised responses.
+- Auth paths: every token-issuing path applies sign-in's checks; logout and revoke never store unverified claims; auth cookies are `__Host-`; proxy trust is an exact list or hop count, set in every environment.
+- New jobs and notifications re-check each recipient's membership and role at send time; new child records apply the parent's access rule; hidden fields stay hidden on new endpoints and exports.
 - New env vars are in `.env.example`, in the config schema (validated at startup), and set in every target environment.
 - Backward compatibility: clients on the previous version keep working during and after the deploy (no removed fields, renamed routes or changed meanings without versioning).
 - Outbound calls have timeouts; retries only for idempotent operations; failure of a third party degrades gracefully.
