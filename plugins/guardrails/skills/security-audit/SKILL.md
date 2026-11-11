@@ -25,7 +25,8 @@ Search before reading: use the patterns in `references/leak-patterns.md` and tar
 1. **Git history:** if gitleaks is installed, `gitleaks git --redact --no-banner -v .` (full history). Otherwise search the working tree with the patterns in `references/leak-patterns.md`, and `git log -p` for the highest-risk patterns (private keys, live payment keys, cloud keys, database URLs with passwords).
 2. **Tracked secret files:** `git ls-files` matched against `.env`, `*.pem`, `*.key`, `*.p12`, keystores and service-account JSON, ignoring `.env.example`.
 3. **Client exposure:** browser- and app-exposed env prefixes (`NEXT_PUBLIC_`, `VITE_`, `REACT_APP_`, `NUXT_PUBLIC_`, `PUBLIC_`, `EXPO_PUBLIC_`) holding anything secret; server-only SDKs or keys imported into client code; if a build output exists (`.next/static`, `dist`, `build`), search it for the leak patterns; public source maps in production.
-4. **Data exposure:** responses returning whole records (password hashes, tokens, internal flags); error handlers returning stack traces or SQL; logs with tokens, OTPs, passwords or personal data; analytics events carrying personal data.
+4. **Data exposure:** responses returning whole records (password hashes, tokens, internal flags); error handlers returning stack traces or SQL; logs with tokens, OTPs, passwords or personal data; analytics events carrying personal data. Bearer tokens in a route's path or query (invites, resets, share links) end up in every access log that writes the concrete path; check what the request logger writes.
+5. **Field-level exposure:** a field hidden from a role on one endpoint (costs, rates, pay, totals) but returned by another: lists, related records, exports, partner or referral views, PDFs.
 
 A secret found in history or a bundle is leaked, even if it's gone from the latest commit. It goes on the rotate-now list.
 
@@ -35,7 +36,15 @@ Never print a secret's value, in the report or in quoted command output: give it
 
 - List every entry point with its auth requirement. Flag any without authentication that isn't clearly meant to be public.
 - For entry points that take a record id, check that the code verifies ownership or organisation membership before reading or changing it (broken object-level authorisation). Check admin actions are restricted by more than the UI hiding a button.
+- Child records (documents, notes, entries, milestones): read, edit and delete apply the parent's access rule. Every write path (edit, submit, approve, bulk), not just create, re-checks scope and state; an edit after sign-off or approval doesn't keep the sign-off.
 - Sessions and tokens: storage (httpOnly cookies or secure storage), expiry, refresh and revocation, password reset and OTP flows rate-limited, CSRF for cookie auth.
+  - Logout and revoke: is any claim read with an unverified decode and then stored? Can a client-made token plant a system marker (a `revoke-all:` jti)? Does the revocation check skip itself when payloads are encrypted?
+  - Every token-issuing path (refresh, code verify, invite accept, password change, SSO) applies sign-in's status, role and access-window checks.
+  - Attempt counters are read, then incremented in a separate step: concurrent guesses all pass.
+  - Auth cookies set with a parent `Domain` reach every sibling subdomain; they should be `__Host-`.
+  - New-device alerts that hash request headers can be spoofed; an unknown device that counts as known fails open.
+- Multi-tenant accounts: an invite or email lookup that returns another organisation's user profile or account status, writes to that shared profile, or binds the account before the person accepts.
+- Background jobs and notifications that send to a stored user id (creator, assignee) without re-checking current membership and role.
 - BaaS: Supabase tables in exposed schemas without RLS or with permissive policies, service-role key in client code; Firebase rules with `if true`, test-mode rules, or no ownership check (`../setup/references/platforms/baas.md`).
 
 ## 4. Injection and unsafe input
@@ -46,12 +55,13 @@ Never print a secret's value, in the report or in quoted command output: give it
 - Deserialisation of untrusted data (`pickle`, unsafe YAML).
 - Spreadsheet formula injection: CSV or Excel exports that don't escape cells starting with `=`, `+`, `-`, `@`, tab or carriage return.
 - Open redirects: `next` or return URLs that can leave the site (`//evil.example`, `/\evil.example`, a path the router resolves off-site).
-- Missing schema validation, size limits or type checks on bodies, uploads and query params.
+- Missing schema validation, size limits or type checks on bodies, uploads and query params, including negative or zero page sizes and page numbers that slip under a maximum-only cap.
 
 ## 5. Configuration and platform
 
 - Security headers, CORS (no `*` with credentials), cookie flags, HTTPS-only settings, debug modes off in production, admin panels and API docs protected.
 - Rate limits on sign-in, OTP, reset and expensive endpoints.
+- Proxy trust: `trust proxy` set to `true`, or falling back to it when unset, lets clients forge `X-Forwarded-For` and dodge per-IP limits. It should be an exact list or hop count that fails closed in production. A server-side proxy (Next.js middleware, BFF) should set the header itself, not relay the client's.
 - Webhooks: signature verification over the raw body, replay protection, idempotency.
 - Uploads: type and size allow-lists with the type checked against the file's signature bytes, not the declared type or extension; private storage; server-generated names.
 

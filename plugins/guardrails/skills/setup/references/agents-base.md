@@ -84,6 +84,18 @@ Most bugs that reach QA live here. Before calling a change done, decide what it 
 - Keep sign-in and "return to" redirects on this site; parse the target the way the browser will.
 - Secrets come only from the environment or a secret manager. Never commit `.env` files, keys or credentials. A leaked secret is rotated first, then removed.
 - No secrets, tokens, passwords or personal data in logs, error messages, URLs or client bundles.
+- Child records (documents, notes, entries, milestones) follow their parent's access rule on read, edit and delete. Every write path (edit, submit, approve, bulk) re-checks the caller's scope and the record's state, not just create. Editing something signed off or approved reopens it or is refused. A bulk action skips and reports the items that fail, rather than failing the batch.
+- Field rules (costs, rates, margins, pay) hold on every endpoint that returns the record: lists, related records, exports and PDFs. Serialise responses from an allow-list of fields.
+- Never store or act on claims from a token whose signature you haven't checked, logout and revoke included. System markers (revoke-all, admin) get their own field, never a prefix in a value input can fill. Revocation reads verified, decrypted claims and fails closed.
+- Every path that issues a token (sign-in, refresh, code verify, invite accept, password change, SSO) applies the same checks: account and membership status, role, access window.
+- Auth cookies are host-only: `__Host-` prefix, `Secure`, `Path=/`, no `Domain`. Moving to host-only expires the old parent-domain copy and rotates the signing secret.
+- "New device" alerts key on a server-issued random cookie, never on client headers (User-Agent, language). A device with no record counts as new.
+- Bearer secrets (invite, reset, share and form links) go in the URL fragment of the link and the body of the API call, never a path or query string. Access logs record the route template, not the concrete path.
+- Attempt limits (OTP, codes, PINs) count and check in one atomic update.
+- Behind a proxy, trust exactly its addresses or hop count, never `true`, and refuse to start in production without it. A server-side proxy sets `X-Forwarded-For` itself; it never relays the client's.
+- A person's account is theirs: another organisation can't read or edit their shared profile by inviting them, so store what the inviter typed on the invite or membership. Email lookups (invite, sign-in, reset) don't reveal whether an account exists or its status, and never attach an existing account to an organisation before the person accepts.
+- Page size and page number have a lower bound as well as a cap.
+- Scheduled jobs, emails and notifications re-check each recipient's membership and role when they send.
 - Run `/security-review` before merging anything that touches auth, payments, personal data, data isolation, secrets or file uploads. Run `/guardrails:security-audit` and `/guardrails:ship-check` before each release.
 
 ### No AI attribution, no emojis

@@ -82,3 +82,14 @@ These go into AGENTS.md (Security section) and are what `/guardrails:pr-review` 
 - Every permission is enforced on the server; hiding a control on screen is never the check.
 - Security headers and a strict CORS allow-list; no `*` with credentials.
 - No stack traces, internal ids or personal data in error responses or logs.
+- Child records follow the parent's access rule on read, edit and delete; every write path re-checks scope and state; edits after sign-off or approval reopen it or are refused; bulk actions skip and report failing items.
+- Field-level visibility (costs, rates, pay) holds on every endpoint, export and related record; responses are serialised from an allow-list.
+- No claim from an unverified token is stored or acted on (logout included); system markers have their own field; revocation reads verified claims and fails closed.
+- Every token-issuing path applies sign-in's checks: account and membership status, role, access window.
+- Auth cookies are host-only (`__Host-`, `Path=/`, no `Domain`); new-device identity is a server-issued random cookie, never request headers, and unknown devices count as new.
+- Bearer secrets go in a link's fragment and the request body, never a path or query; access logs record the route template.
+- Attempt counters are checked and incremented in one atomic update.
+- Proxy trust is an exact address list or hop count, never `true`, and startup fails in production without it; a server-side proxy never relays the client's `X-Forwarded-For`.
+- Shared cross-organisation profiles can't be read or edited by an organisation before the person accepts; email lookups don't reveal account existence or status.
+- Pagination has a lower bound as well as a cap.
+- Jobs and notifications re-check each recipient's membership and role at send time.
