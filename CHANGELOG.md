@@ -50,3 +50,4 @@ All notable changes to this project. Versions follow [semantic versioning](https
   - jobs and notifications that re-check recipients at send time.
 - `pr-review` manual test list: odd input, double submit, clearing a field, totals compared across screens, and each role (and one that can't reach the change).
 - Eval `pr-review-off-happy-path`: an invoices branch that works on the happy path but carries seven of these bugs.
+- Eval `pr-review-security-rules`: a team-access branch that works on the happy path but carries seven of the security-scan bugs (unverified logout claims, invite tokens in the access log, notes that skip the invoice's visibility, a non-atomic code counter, trust proxy left at true, no page-size floor, reminders to a disabled author).
