@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: pr-review-off-happy-path
+description: An invoices branch that works on the happy path but carries the bugs visual QA kept finding - drafts and voids counted as owed, a UTC "today" fixed at module load, quantities clamped silently, a cleared field sent as undefined, uploads trusted by declared type, a CSV export open to formulas, and history logging fields that didn't change.
+tags: [pr-review]
+runs: 1
+context:
+  scaffold_script: fixture.sh

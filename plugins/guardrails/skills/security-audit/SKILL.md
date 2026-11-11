@@ -44,6 +44,8 @@ Never print a secret's value, in the report or in quoted command output: give it
 - Shell commands, file paths, templates, regexes or HTML built from input; `eval` and dynamic `require` or `import`.
 - SSRF: server-side fetches of user-supplied URLs without an allow-list.
 - Deserialisation of untrusted data (`pickle`, unsafe YAML).
+- Spreadsheet formula injection: CSV or Excel exports that don't escape cells starting with `=`, `+`, `-`, `@`, tab or carriage return.
+- Open redirects: `next` or return URLs that can leave the site (`//evil.example`, `/\evil.example`, a path the router resolves off-site).
 - Missing schema validation, size limits or type checks on bodies, uploads and query params.
 
 ## 5. Configuration and platform
@@ -51,7 +53,7 @@ Never print a secret's value, in the report or in quoted command output: give it
 - Security headers, CORS (no `*` with credentials), cookie flags, HTTPS-only settings, debug modes off in production, admin panels and API docs protected.
 - Rate limits on sign-in, OTP, reset and expensive endpoints.
 - Webhooks: signature verification over the raw body, replay protection, idempotency.
-- Uploads: type and size allow-lists, private storage, server-generated names.
+- Uploads: type and size allow-lists with the type checked against the file's signature bytes, not the declared type or extension; private storage; server-generated names.
 
 ## 6. Dependencies and CI
 

@@ -11,7 +11,10 @@ Use the sections for the areas the release touches. Each item is pass, fail, or 
 - Jobs and webhooks are idempotent and safe to retry; queues have a dead-letter or failure path.
 - Rate limits on new sensitive or expensive endpoints.
 - Health endpoints still reflect real readiness (database, cache, queue).
-- Error responses hide internals; logs carry a request id and no personal data.
+- Error responses hide internals; validation messages are written for people; logs carry a request id and no personal data.
+- Dates stamped and compared ("today", due, overdue, expiry) use the business's time zone; tried just after midnight there.
+- Audit entries for new writes record only real changes, with before and after values.
+- Uploads checked by their content bytes; exports escape formula cells.
 - Load: new queries indexed; no unbounded lists; heavy work off the request path.
 
 ## Database
@@ -26,7 +29,10 @@ Use the sections for the areas the release touches. Each item is pass, fail, or 
 ## Frontend
 
 - Every new or changed screen matches the design at phone and desktop widths, in every designed state (loading, empty, error, disabled, offline).
-- Error boundaries and not-found pages show the designed states; nothing renders a raw error.
+- Error boundaries and not-found pages show the designed states; nothing renders a raw error, enum value, code or minor-unit amount.
+- Each new form tried with odd input (2.5, -1, blank, too many decimals, a huge number), a double click, and a cleared field saved; bad input is refused at the field, never silently changed.
+- Each new screen tried as every role that can reach it and one that can't; hidden actions are also refused by the API.
+- Totals and counts on new screens match the same figure elsewhere (list, detail, dashboard, export, portal), and count only the right states (no drafts, voids or refunds as money).
 - Accessibility: automated checks pass; keyboard and screen-reader pass on changed flows.
 - Performance: Core Web Vitals and bundle size within the agreed budgets (or measured and noted if no budget exists); images sized; no new heavy client dependency.
 - The production build contains no secrets: search the build output (`.next/static`, `dist`, `build`) with the leak patterns; no public source maps unless intended.

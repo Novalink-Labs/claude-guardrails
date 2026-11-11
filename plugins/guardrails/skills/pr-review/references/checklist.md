@@ -29,28 +29,32 @@ Is each of these covered by the spec, the design or an accepted ADR? If not, it'
 ## 2. Critical bugs
 
 For each changed function or component, walk the cases:
-- Empty, null or missing input; zero, negative and maximum values; off-by-one at boundaries; very long strings; unicode.
+- Empty, null or missing input; zero, negative and maximum values; fractions where only whole numbers make sense (2.5 items); more decimals than the currency has (12.505); off-by-one at boundaries; very long strings; unicode. Bad input is refused with a message at the field, never clamped, rounded or dropped silently (`Math.max(0, …)`, `Math.round` on input, a filter that drops a line of 0).
+- Clearing a field: the edit sends `null` and the server removes the value. A blank sent as `undefined` drops out of JSON, so the save answers 200 and keeps the old value.
+- Same figure, two places: a preview, summary, badge or rule computed on the screen and again on the server, or on two screens, comes from one function. Check that they agree on rounding and on which records count.
 - Duplicates and retries: is it idempotent? What happens when the same request, job or webhook arrives twice?
 - Concurrency: two users or two instances at once; read-modify-write without a transaction or atomic update; check-then-act races.
 - Failure: the database, a third-party API or the network fails halfway. Is anything left half-written? Is the error surfaced, logged and handled, or swallowed?
 - Async: unawaited promises, unhandled rejections, missing cancellation, stale closures, effects that race (a slow response overwriting a newer one).
-- Time: time zones (store UTC), DST, expiry checks, clock skew between client and server.
-- Money and quantities: floating point for money, rounding, currency mix-ups.
-- Pagination and limits: unbounded queries or lists, missing maximum page size.
-- Contracts: does the frontend call an endpoint or field that the backend actually has, with the same types? Are breaking API changes versioned?
+- Time: instants are stored in UTC, but "today", due dates, overdue and "days left" are worked out in the business's (or user's) time zone, not the server's UTC day. A date computed once at module load goes stale. Also DST, expiry checks, clock skew between client and server.
+- Money and quantities: floating point for money, rounding, currency mix-ups (an amount relabelled into another currency without converting). Every total counts only the states it means: drafts, cancelled and void records, credit notes and refunds are in or out on purpose, and a refund is never counted as a sale. A missing figure shows as unknown, not 0.
+- Pagination and limits: unbounded queries or lists, missing maximum page size, and the reverse: a total, export or picker built from only the first page of a paginated API.
+- Contracts: does the frontend call an endpoint or field that the backend actually has, with the same types and the same enum and status names? Does the screen offer only values the server accepts, and ask for every step the server requires (an approval, a confirmation)? Are breaking API changes versioned?
 
 ## 3. Security and leaks
 
 - Authentication on every new route, handler, server action, function or database rule unless explicitly public (and listed in the PR).
 - Object-level authorisation: the record is checked against the caller's ownership or organisation, not just their role. Try the action with someone else's id in your head.
-- Function-level authorisation: admin-only actions are actually restricted.
+- Function-level authorisation: admin-only actions are actually restricted. A control the screen hides from a role is still refused by the server; call the route directly in your head. A permission gained one way (switching a setting later) is also required the other way (setting it at create time).
 - Input validated at the edge with a schema; unknown fields rejected; types, lengths and formats checked.
 - Injection: no string-built SQL or NoSQL operators from input, no shell commands, file paths, templates or HTML built from input, no `eval`.
 - SSRF: no fetching a URL the user controls without an allow-list.
 - Secrets: no keys, tokens, passwords or connection strings in the diff, tests, fixtures, docs or screenshots (patterns in `../../security-audit/references/leak-patterns.md`). No new `.env` or key files tracked.
 - Exposure: responses return only intended fields (no password hashes, tokens, internal flags); errors don't leak stack traces or SQL; logs don't contain personal data or secrets; nothing secret in browser-exposed env vars or the mobile bundle.
 - Tokens stored in httpOnly cookies or secure storage, never local storage; CSRF handled for cookie auth.
-- Webhooks verify signatures and are idempotent. Uploads are type- and size-limited with server-generated names.
+- Webhooks verify signatures and are idempotent. Uploads are type- and size-limited, with the type checked against the file's signature bytes (a declared `image/png` or a `.png` name proves nothing), and stored under server-generated names.
+- Exports: CSV and spreadsheet cells starting with `=`, `+`, `-`, `@`, tab or carriage return are escaped; values with commas, quotes or newlines are quoted.
+- Redirects: a `next` or return URL is parsed like the browser does and stays on this site.
 - New dependencies: needed, maintained, licence acceptable, no known high or critical vulnerabilities.
 - CI changes: no `pull_request_target` running PR code, no untrusted `${{ }}` in `run:`, minimal `permissions`.
 - Sensitive areas (auth, payments, personal data, data isolation, secrets, uploads): recommend `/security-review` before merge.
@@ -101,12 +105,16 @@ Signs code was generated without understanding the codebase. Each one is worth a
 - `any`, type assertions or `!` to silence the compiler.
 - Endpoints, fields or enum values the backend or spec doesn't have.
 - Hardcoded sample data, fake ids or placeholder URLs.
+- Framework defaults left where people see them: the validator's own messages, the server's UTC day as "today", the arrow cursor on buttons, one generic page title everywhere.
 - Generic AI-looking UI (see `/guardrails:ui-review`).
 
 ## 9. Backend
 
 - Input validated before the handler runs; response serialised to allowed fields.
-- Correct HTTP status codes; errors use the app's error codes and envelope.
+- Correct HTTP status codes; errors use the app's error codes and envelope. Validation messages are written for the person filling the form, not the validator library's defaults or property names.
+- Audit and history entries record only fields that changed, with before and after values, and only what really happened (no "notified" when nothing was sent). Every field with business meaning is in the audited list.
+- Multi-step writes: if a later step fails, the earlier ones are undone or marked, not left half done.
+- HTTP keep-alive on the server is longer than the idle timeout of the proxy or load balancer in front of it.
 - Transactions around multi-record changes; atomic operators for counters; unique indexes for idempotency.
 - Queries indexed; no N+1; lists paginated with a maximum.
 - Outbound calls have timeouts; retries only for idempotent operations.
@@ -129,13 +137,14 @@ Signs code was generated without understanding the codebase. Each one is worth a
 
 - Matches the design: layout, tokens, typography, and every designed state (loading, empty, error, disabled, offline). No invented states.
 - Uses the chosen component library (DESIGN.md or its ADR) instead of hand-rolled dialogs, menus, selects, comboboxes, tabs, toasts, tooltips or date pickers; no literal colours, sizes or fonts in components. For deeper UI checks, suggest `/guardrails:ui-review`.
-- Accessibility: semantic elements, labels, keyboard operation, visible focus, contrast, alt text, announced errors.
-- Responsive at phone and desktop widths; no horizontal scroll; touch targets large enough.
-- Data: server state through the data-fetching library; no fetching in effects; loading and error handled; no stale or racing responses; caches keyed per user.
-- Forms: validation messages, disabled while submitting, no double submit, input kept on error.
+- Accessibility: semantic elements, labels tied to their inputs, keyboard operation, visible focus, contrast, alt text, announced errors. A button repeated on each row names its item ("Archive Acme Ltd"), not just "Archive".
+- Responsive at phone and desktop widths; no horizontal scroll; touch targets large enough; names and amounts stay readable rather than cut to a few letters beside buttons.
+- Data: server state through the data-fetching library; no fetching in effects; loading and error handled; no stale or racing responses; caches keyed per user. After a write, every list and count it changed updates without a reload.
+- Forms: validation messages under the field, disabled while submitting and until the next page opens (a second click on Create makes a duplicate), input kept on error, cleared fields sent as `null`, a confirmation that the save worked. Deleting, voiding or discarding asks first.
+- Words on screen: no raw enum values, error codes, minor units (`amountMinor: 50000`) or validator text; status labels come from one map, not CSS capitalisation.
 - Security: no secrets in client env vars; no unsafe HTML; tokens not in local storage; server actions and route handlers check auth.
 - Performance: no large new client dependency for a small job; images sized; no unnecessary client components.
-- SEO and metadata for public pages; private pages `noindex`.
+- Each page has its own title; SEO and metadata for public pages; private pages `noindex`. Nothing internal (design briefs, notes) ships hidden in the HTML.
 - Copy matches the spec; no emojis or placeholder text; strings go through i18n if the app is localised.
 
 ## 12. Mobile

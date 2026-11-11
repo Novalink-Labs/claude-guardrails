@@ -57,11 +57,31 @@ Instructions for every AI agent and every new developer in this repo. `CLAUDE.md
 - Define each enum once and use it everywhere: database schema, validation and API docs.
 - Tests use named values too; no unexplained literals in assertions.
 
+### Off the happy path
+
+Most bugs that reach QA live here. Before calling a change done, decide what it does with each case it can meet:
+
+- **Odd input:** refuse what doesn't fit; never clamp, round or drop it silently. Counts take no fractions, money takes no more decimals than its currency, and zero, negative, blank and very large values each get a decision. The message sits under the field, and the server refuses the same values.
+- **One figure, one function:** a total, rounding or rule shown on screen and saved by the server comes from the same code, or the screen asks the server.
+- **Totals name what they count:** drafts, cancelled and void records, credit notes and refunds are in or out on purpose. A figure that isn't known shows as unknown, not 0. A total or picker never reads just the first page of a paginated list.
+- **Screen and server agree:** the screen offers only what the server accepts, asks for every step the server requires (approval, confirmation), and uses the server's names for fields, statuses and types.
+- **Clearing clears:** a cleared field is sent as `null` and the server removes the value. `undefined` drops out of JSON, so the save reports success and changes nothing.
+- **The business's day:** store instants in UTC, but work out "today", due dates and deadlines in the business's time zone, on each request. Never compute a date once when a module loads.
+- **Twice at once:** a double click, a retry or two users at the same moment can't create twice, pay twice or skip a limit. Keep the form locked until the result or the next page arrives; use atomic updates, transactions and idempotency keys.
+- **Half done:** if a later step fails, undo or mark the earlier ones.
+- **Feedback:** every write says it worked and refreshes every list and count it changed. Deleting or voiding asks first.
+- **Words for people:** no validator defaults ("must be shorter than or equal to"), raw enum values, codes or minor units on screen, and no status words reshaped with CSS. An error says what to do next.
+- **History tells the truth:** audit entries record only what changed, with before and after values, and never claim something that didn't happen (an email "sent" that wasn't).
+- **Defaults chosen, not inherited:** time zone, validation messages, server keep-alive (longer than the proxy's in front of it), cursor and focus styles, and each page's title and robots tag.
+
 ### Security
 
 - Every route, handler, server action and database rule requires authentication unless it is explicitly public. A PR lists any new public ones.
-- Authorise each access to a record by its owner or organisation, not by role alone.
+- Authorise each access to a record by its owner or organisation, not by role alone. Hiding a control on screen is never the check: the server refuses it too.
 - Validate all input at the edge with a schema. Never build queries, shell commands, file paths or HTML from raw input.
+- Check uploads by their content (the file's signature bytes), not the declared type or extension.
+- Escape exported CSV and spreadsheet cells that start with `=`, `+`, `-`, `@`, tab or carriage return.
+- Keep sign-in and "return to" redirects on this site; parse the target the way the browser will.
 - Secrets come only from the environment or a secret manager. Never commit `.env` files, keys or credentials. A leaked secret is rotated first, then removed.
 - No secrets, tokens, passwords or personal data in logs, error messages, URLs or client bundles.
 - Run `/security-review` before merging anything that touches auth, payments, personal data, data isolation, secrets or file uploads. Run `/guardrails:security-audit` and `/guardrails:ship-check` before each release.
@@ -104,6 +124,7 @@ Climb this ladder and stop at the first rung that works:
 - Unit tests don't touch the network or a real database, and they control the clock.
 - Critical user flows get an end-to-end test.
 - Coverage is measured in CI with the test runner's coverage tool. Changed business logic is covered, and coverage of changed files never drops. The global threshold starts at today's number and only goes up.
+- Before calling a feature done, try it the way QA will: odd input (2.5, -1, blank, 12.505, a huge number), a double click, as every role that can reach it and one that can't, just after midnight in the business's time zone, and at phone width. Check that its totals match the same figure wherever else the app shows it.
 - Manual testing is required where automation can't reach: UI against the design at phone and desktop widths, real devices for mobile, payments, email and other third-party flows in their sandboxes, migrations on production-shaped data, and keyboard and screen-reader passes. The PR lists the manual checks done, or says none were needed and why.
 - Never skip, weaken or delete a check, or lower a coverage threshold, to get a merge through.
 

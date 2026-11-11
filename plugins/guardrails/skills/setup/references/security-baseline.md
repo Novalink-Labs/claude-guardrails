@@ -76,6 +76,9 @@ These go into AGENTS.md (Security section) and are what `/guardrails:pr-review` 
 - Tokens in httpOnly, Secure, SameSite cookies or the `Authorization` header; never in URLs, local storage or logs.
 - Rate limits on sign-in, OTP, password reset and expensive endpoints, counted in a shared store when there is more than one instance.
 - Webhooks verify the signature over the raw body, reject replays and are idempotent on the provider's event id.
-- File uploads: allow-listed types and sizes, server-generated names, private storage with signed URLs.
+- File uploads: allow-listed types and sizes checked against the file's signature bytes (never the declared type or extension), server-generated names, private storage with signed URLs.
+- Exports: CSV and spreadsheet cells starting with `=`, `+`, `-`, `@`, tab or carriage return are escaped.
+- Redirect targets (`next`, return URLs) are parsed like the browser does and kept on this site.
+- Every permission is enforced on the server; hiding a control on screen is never the check.
 - Security headers and a strict CORS allow-list; no `*` with credentials.
 - No stack traces, internal ids or personal data in error responses or logs.

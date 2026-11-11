@@ -42,7 +42,7 @@ Ask for everything missing in one message, saying why each matters, then wait. I
 Read the whole diff, then enough surrounding code to understand each change. Diff output has no file line numbers, even when you read it back from a saved file: before citing a line, open the changed file on the head or `git grep -n` it there. Work through `references/checklist.md`: the general sections always, and the backend, frontend, mobile and database sections when the diff touches them. In order of weight:
 
 1. **Silent decisions:** architecture, data model, product behaviour, UI pattern or security logic that no spec, design or accepted ADR covers.
-2. **Critical bugs:** for each changed function, walk the inputs and states it can meet (empty, null, boundary, duplicate, concurrent, dependency down, partial failure, retry) and what the code does with each.
+2. **Critical bugs:** for each changed function, walk the inputs and states it can meet (empty, null, cleared, fractional or negative numbers, boundary, duplicate, concurrent, dependency down, partial failure, retry, just after midnight in the business's time zone, records in every status such as draft, void or refunded) and what the code does with each. Where the screen and the server both compute or allow something, check they agree.
 3. **Security and leaks:** access control, input handling, secrets in the diff, data exposed in responses, logs or client bundles. Run `gitleaks git --log-opts="<base>..<head>" --redact --no-banner -v` if gitleaks is installed; otherwise search the added lines with `../security-audit/references/leak-patterns.md`.
 4. **Structure and keep-it-small:** the repo's feature layout and layer rules; ponytail, YAGNI, KISS and DRY. For a DRY finding, find and cite the existing helper.
 5. **Named values:** magic strings and numbers, environment reads outside config.
@@ -63,6 +63,8 @@ Label evidence: **FACT** (seen in code, a doc or command output), **INFERENCE** 
 
 Automated tests don't prove everything. List the manual checks this change needs, and only those, as concrete steps someone can follow. Typical triggers:
 - UI: compare with the design at phone and desktop widths, keyboard-only use, screen reader on the changed flow, browsers the product supports.
+- Forms and figures: odd input (2.5, -1, blank, 12.505, a huge number), a double click on submit, clearing a field and saving, and the changed totals against the same figure on other screens and exports.
+- Each role that can reach the change, and one that can't, on screen and by calling the route directly.
 - Mobile: a real iOS and Android device, a small screen, slow network and offline, permission refused.
 - Money, email, SMS, push, webhooks or third-party APIs: one end-to-end run in the provider's sandbox.
 - Migrations and data backfills: run on a copy of production-shaped data and check the result and the rollback.
