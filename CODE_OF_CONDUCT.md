@@ -6,4 +6,4 @@ In short: be respectful, assume good intent, keep discussion about the work, and
 
 ## Reporting
 
-Report unacceptable behaviour privately to the maintainers at TODO(maintainers): add a contact email before publishing. Reports are handled confidentially, and the maintainers decide on any action under the Covenant's enforcement guidelines.
+Report unacceptable behaviour privately to the maintainers at business@novalinklabs.in. Reports are handled confidentially, and the maintainers decide on any action under the Covenant's enforcement guidelines.
