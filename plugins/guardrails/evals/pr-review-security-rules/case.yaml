@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: pr-review-security-rules
+description: A team-access branch that works on the happy path but carries the bugs a backend security scan found - a public logout that blacklists unverified token claims, invite tokens written to the access log, invoice notes that skip the invoice's visibility rule, a sign-in code counter that isn't atomic, trust proxy left at true, a page size with no lower bound, and reminder emails to a disabled author.
+tags: [pr-review, security]
+runs: 1
+context:
+  scaffold_script: fixture.sh
